@@ -1,23 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import { useSelector, useDispatch } from 'react-redux'
+import { counterActions } from './store/counter'
+import { authActions } from './store/auth';
+import { fetchMovies } from './store/movies';
 
 function App() {
+
+  const dispatch = useDispatch()
+  const counter = useSelector((state) => state.ctr.counter)
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
+  const movies = useSelector((state) => state.movies.movies)
+
+  const movieItems = movies.map(movie => {
+      return <li key = {movie.imdbID}>{movie.Title}</li>
+  })
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {isAuthenticated ? "Authenticated": "Not Authenticated"}
+      <h1>{counter}</h1>
+      <button onClick = {() => dispatch(counterActions.increment())}>Increment</button>
+      <button onClick = {() => dispatch(counterActions.decrement())}>Decrement</button>
+      <button onClick = {() => dispatch(counterActions.add(10))}>Add +10</button>
+      <button onClick = {() => dispatch(authActions.login())}>Login</button>
+      <button onClick = {() => dispatch(authActions.logout())}>Logout</button>
+      <button onClick = {() => dispatch(fetchMovies())}>Fetch Movies</button>
+      <ul>
+        {movieItems}
+      </ul>
     </div>
   );
 }
